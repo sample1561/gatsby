@@ -1,9 +1,9 @@
-namespace Gatsby.CodeAnalysis.AbstractSyntax
+namespace Gatsby.Analysis.AbstractSyntax
 {
     internal enum AbstractUnaryOperatorKind
     {
         Identity,
-        Negation,
+        Negative,
         LogicalNegation
     }
 }

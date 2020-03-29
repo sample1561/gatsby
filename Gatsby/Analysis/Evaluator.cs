@@ -1,7 +1,7 @@
-﻿﻿using System;
- using Gatsby.CodeAnalysis.AbstractSyntax;
+﻿using System;
+using Gatsby.Analysis.AbstractSyntax;
 
- namespace Gatsby.CodeAnalysis
+namespace Gatsby.Analysis
 {
     internal sealed class Evaluator
     {
@@ -26,12 +26,12 @@
             {
                 var operand = EvaluateExpression(u.Operand);
 
-                return u.OperatorKind switch
+                return u.Operator.Kind switch
                 {
                     AbstractUnaryOperatorKind.Identity => (object) (int) operand,
-                    AbstractUnaryOperatorKind.Negation => (-1 * (int) operand),
+                    AbstractUnaryOperatorKind.Negative => (-1 * (int) operand),
                     AbstractUnaryOperatorKind.LogicalNegation => !(bool) operand,
-                    _ => throw new Exception($"Unexpected unary operator {u.OperatorKind}")
+                    _ => throw new Exception($"Unexpected unary operator {u.Operator.Kind}")
                 };
             }
 
@@ -40,7 +40,7 @@
                 var left = EvaluateExpression(b.Left);
                 var right = EvaluateExpression(b.Right);
 
-                return b.OperatorKind switch
+                return b.Operator.Kind switch
                 {
                     AbstractBinaryOperatorKind.Addition => ((int)left + (int)right),
                     AbstractBinaryOperatorKind.Subtraction => ((int)left - (int)right),
@@ -51,7 +51,7 @@
                     AbstractBinaryOperatorKind.Conjunction => (bool)left && (bool)right,
                     AbstractBinaryOperatorKind.Disjunction => (bool)left || (bool)right,
                     
-                    _ => throw new Exception($"Unexpected binary operator {b.OperatorKind}")
+                    _ => throw new Exception($"Unexpected binary operator {b.Operator}")
                 };
             }
 

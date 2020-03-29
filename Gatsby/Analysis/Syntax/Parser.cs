@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Gatsby.CodeAnalysis.Syntax
+namespace Gatsby.Analysis.Syntax
 {
     internal sealed class Parser
     {

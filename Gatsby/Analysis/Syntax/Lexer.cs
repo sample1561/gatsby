@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 
-namespace Gatsby.CodeAnalysis.Syntax
+namespace Gatsby.Analysis.Syntax
 {
     internal sealed class Lexer
     {
         private readonly string _text;
         private int _position;
-        private List<string> _diagnostics = new List<string>();
+        private readonly List<string> _diagnostics = new List<string>();
 
         public Lexer(string text)
         {
@@ -66,7 +66,6 @@ namespace Gatsby.CodeAnalysis.Syntax
                 return new SyntaxToken(TokenType.Whitespace, start, text, null);
             }
             
-            //TODO boolean support
             if (char.IsLetter(Current))
             {
                 var start = _position;
@@ -95,31 +94,54 @@ namespace Gatsby.CodeAnalysis.Syntax
                 case '/':
                     return new SyntaxToken(TokenType.Slash, _position++, "/", null);
                 
+                //TODO maybe add inverse divide a\b == b/a
+                
                 case '%':
                     return new SyntaxToken(TokenType.Modulo, _position++, "%", null);
                 
                 case '^':
                     return new SyntaxToken(TokenType.Power, _position++, "^", null);
                 
+                //TODO a | b means a divides b. 
+                
                 //Boolean Operators
+                //TODO can this be use as a factorial operator?
                 case '!':
                     return new SyntaxToken(TokenType.Negation, _position++, "!", null);
-                
+
                 case '&':
+                {
                     if (Ahead == '&')
                     {
-                        return new SyntaxToken(TokenType.And, _position += 2,"&&",null);
+                        return new SyntaxToken(TokenType.LogicalAnd, _position += 2, "&&", null);
                     }
 
                     break;
+                }
 
                 case '|':
+                {
                     if (Ahead == '|')
                     {
-                        return new SyntaxToken(TokenType.Or, _position += 2,"||",null);
+                        return new SyntaxToken(TokenType.LogicalOr, _position += 2, "||", null);
                     }
 
                     break;
+                }
+                
+                //TODO bitwise operators
+                // - ~x	bitwise not
+                // - x & y	bitwise and
+                // - x | y	bitwise or
+                
+                //TODO Comparative Operators
+                //- ==
+                //- !=
+                // <=
+                // >= 
+                // > 
+                // <
+                
 
                 case '(':
                     return new SyntaxToken(TokenType.OpenParenthesis, _position++, "(", null);

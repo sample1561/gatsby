@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Gatsby.CodeAnalysis.Syntax
+namespace Gatsby.Analysis.Syntax
 {
     public sealed class ParenthesizedExpressionSyntax : ExpressionSyntax
     {

@@ -1,4 +1,4 @@
-namespace Gatsby.CodeAnalysis.Syntax
+namespace Gatsby.Analysis.Syntax
 {
     public enum TokenType
     {
@@ -12,9 +12,9 @@ namespace Gatsby.CodeAnalysis.Syntax
         Star,
         Slash,
         Modulo,
-        And,
-        Or,
-        Negation,//Warning
+        LogicalAnd,
+        LogicalOr,
+        Negation,
         Power,
         OpenParenthesis,
         CloseParenthesis,

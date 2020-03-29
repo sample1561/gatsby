@@ -1,6 +1,6 @@
 using System;
 
-namespace Gatsby.CodeAnalysis.AbstractSyntax
+namespace Gatsby.Analysis.AbstractSyntax
 {
     internal abstract class AbstractExpression : AbstractNode
     {

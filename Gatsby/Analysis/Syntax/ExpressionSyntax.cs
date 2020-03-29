@@ -1,4 +1,4 @@
-namespace Gatsby.CodeAnalysis.Syntax
+namespace Gatsby.Analysis.Syntax
 {
     public abstract class ExpressionSyntax : SyntaxNode
     {

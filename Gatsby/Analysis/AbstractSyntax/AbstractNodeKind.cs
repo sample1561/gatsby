@@ -1,4 +1,4 @@
-namespace Gatsby.CodeAnalysis.AbstractSyntax
+namespace Gatsby.Analysis.AbstractSyntax
 {
     internal enum AbstractNodeKind
     {

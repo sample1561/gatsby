@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using Gatsby.CodeAnalysis;
-using Gatsby.CodeAnalysis.AbstractSyntax;
-using Gatsby.CodeAnalysis.Syntax;
+using Gatsby.Analysis;
+using Gatsby.Analysis.AbstractSyntax;
+using Gatsby.Analysis.Syntax;
 
 namespace Gatsby
 {

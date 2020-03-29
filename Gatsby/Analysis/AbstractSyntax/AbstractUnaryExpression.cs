@@ -1,18 +1,18 @@
 using System;
 
-namespace Gatsby.CodeAnalysis.AbstractSyntax
+namespace Gatsby.Analysis.AbstractSyntax
 {
     internal sealed class AbstractUnaryExpression : AbstractExpression
     {
-        public AbstractUnaryExpression(AbstractUnaryOperatorKind operatorKind, AbstractExpression operand)
+        public AbstractUnaryExpression(AbstractUnaryOperator op, AbstractExpression operand)
         {
-            OperatorKind = operatorKind;
+            Operator = op;
             Operand = operand;
         }
 
         public override AbstractNodeKind Kind => AbstractNodeKind.UnaryExpression;
         public override Type Type => Operand.Type;
-        public AbstractUnaryOperatorKind OperatorKind { get; }
+        public AbstractUnaryOperator Operator { get; }
         public AbstractExpression Operand { get; }
     }
 }

@@ -1,20 +1,20 @@
 using System;
 
-namespace Gatsby.CodeAnalysis.AbstractSyntax
+namespace Gatsby.Analysis.AbstractSyntax
 {
     internal sealed class AbstractBinaryExpression : AbstractExpression
     {
-        public AbstractBinaryExpression(AbstractExpression left, AbstractBinaryOperatorKind operatorKind, AbstractExpression right)
+        public AbstractBinaryExpression(AbstractExpression left, AbstractBinaryOperator op, AbstractExpression right)
         {
             Left = left;
-            OperatorKind = operatorKind;
+            Operator = op;
             Right = right;
         }
 
         public override AbstractNodeKind Kind => AbstractNodeKind.UnaryExpression;
         public override Type Type => Left.Type;
         public AbstractExpression Left { get; }
-        public AbstractBinaryOperatorKind OperatorKind { get; }
+        public AbstractBinaryOperator Operator { get; }
         public AbstractExpression Right { get; }
     }
 }
