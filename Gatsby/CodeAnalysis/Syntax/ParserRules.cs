@@ -2,7 +2,7 @@ using System;
 
 namespace Gatsby.CodeAnalysis.Syntax
 {
-    internal static class SyntaxRules
+    internal static class ParserRules
     {
         public static int GetUnaryOperatorPrecedence(this TokenType kind)
         {
@@ -10,7 +10,10 @@ namespace Gatsby.CodeAnalysis.Syntax
             {
                 case TokenType.Plus:
                 case TokenType.Minus:
-                    return 4;
+                    return 5;
+                
+                case TokenType.Negation:
+                    return 5;
 
                 default:
                     return 0;
@@ -21,17 +24,21 @@ namespace Gatsby.CodeAnalysis.Syntax
         {
             switch (kind)
             {
+                case TokenType.And:
+                case TokenType.Or:
+                    return 1;
+                
                 case TokenType.Plus:
                 case TokenType.Minus:
-                    return 1;
+                    return 2;
                 
                 case TokenType.Star:
                 case TokenType.Slash:
                 case TokenType.Modulo:
-                    return 2;
+                    return 3;
                 
                 case TokenType.Power:
-                    return 3;
+                    return 4;
 
                 
 
@@ -43,16 +50,13 @@ namespace Gatsby.CodeAnalysis.Syntax
         public static TokenType GetKeywordKind(string text)
         {
             text = text.ToLower();
-            
-            switch (text)
+
+            return text switch
             {
-                case "true":
-                    return TokenType.TrueKeyword;
-                case "false":
-                    return TokenType.FalseKeyword;
-                default:
-                    return TokenType.Identifier;
-            }
+                "true" => TokenType.TrueKeyword,
+                "false" => TokenType.FalseKeyword,
+                _ => TokenType.Identifier
+            };
         }
     }
 }

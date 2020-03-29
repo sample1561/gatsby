@@ -15,15 +15,18 @@ namespace Gatsby.CodeAnalysis.Syntax
 
         public IEnumerable<string> Diagnostics => _diagnostics;
 
-        private char Current
+        private char Current => Peek(0);
+
+        private char Ahead => Peek(1);
+
+        private char Peek(int offset)
         {
-            get
-            {
-                if (_position >= _text.Length)
+            var index = _position + offset;
+            
+            if (index >= _text.Length)
                     return '\0';
 
-                return _text[_position];
-            }
+            return _text[index];
         }
 
         private void Next()
@@ -73,26 +76,54 @@ namespace Gatsby.CodeAnalysis.Syntax
 
                 var length = _position - start;
                 var text = _text.Substring(start, length);
-                var kind = SyntaxRules.GetKeywordKind(text);
+                var kind = ParserRules.GetKeywordKind(text);
                 return new SyntaxToken(kind, start, text, null);
             }
 
             switch (Current)
             {
+                //Arithmetic Operators
                 case '+':
                     return new SyntaxToken(TokenType.Plus, _position++, "+", null);
+                
                 case '-':
                     return new SyntaxToken(TokenType.Minus, _position++, "-", null);
+                
                 case '*':
                     return new SyntaxToken(TokenType.Star, _position++, "*", null);
+                
                 case '/':
                     return new SyntaxToken(TokenType.Slash, _position++, "/", null);
+                
                 case '%':
                     return new SyntaxToken(TokenType.Modulo, _position++, "%", null);
+                
                 case '^':
                     return new SyntaxToken(TokenType.Power, _position++, "^", null);
+                
+                //Boolean Operators
+                case '!':
+                    return new SyntaxToken(TokenType.Negation, _position++, "!", null);
+                
+                case '&':
+                    if (Ahead == '&')
+                    {
+                        return new SyntaxToken(TokenType.And, _position += 2,"&&",null);
+                    }
+
+                    break;
+
+                case '|':
+                    if (Ahead == '|')
+                    {
+                        return new SyntaxToken(TokenType.Or, _position += 2,"||",null);
+                    }
+
+                    break;
+
                 case '(':
                     return new SyntaxToken(TokenType.OpenParenthesis, _position++, "(", null);
+                
                 case ')':
                     return new SyntaxToken(TokenType.CloseParenthesis, _position++, ")", null);
             }

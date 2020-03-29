@@ -12,6 +12,9 @@ namespace Gatsby.CodeAnalysis.Syntax
         Star,
         Slash,
         Modulo,
+        And,
+        Or,
+        Negation,//Warning
         Power,
         OpenParenthesis,
         CloseParenthesis,
@@ -25,6 +28,6 @@ namespace Gatsby.CodeAnalysis.Syntax
 
         //Keywords
         TrueKeyword,
-        FalseKeyword
+        FalseKeyword,
     }
 }

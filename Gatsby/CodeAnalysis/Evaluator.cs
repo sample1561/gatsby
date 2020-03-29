@@ -24,41 +24,35 @@
 
             if (node is AbstractUnaryExpression u)
             {
-                var operand = (int)EvaluateExpression(u.Operand);
+                var operand = EvaluateExpression(u.Operand);
 
-                switch (u.OperatorKind)
+                return u.OperatorKind switch
                 {
-                    case AbstractUnaryOperatorKind.Identity:
-                        return operand;
-                    case AbstractUnaryOperatorKind.Negation:
-                        return -1*operand;
-                    default:
-                        throw new Exception($"Unexpected unary operator {u.OperatorKind}");
-                }
+                    AbstractUnaryOperatorKind.Identity => (object) (int) operand,
+                    AbstractUnaryOperatorKind.Negation => (-1 * (int) operand),
+                    AbstractUnaryOperatorKind.LogicalNegation => !(bool) operand,
+                    _ => throw new Exception($"Unexpected unary operator {u.OperatorKind}")
+                };
             }
 
             if (node is AbstractBinaryExpression b)
             {
-                var left = (int)EvaluateExpression(b.Left);
-                var right = (int)EvaluateExpression(b.Right);
+                var left = EvaluateExpression(b.Left);
+                var right = EvaluateExpression(b.Right);
 
-                switch (b.OperatorKind)
+                return b.OperatorKind switch
                 {
-                    case AbstractBinaryOperatorKind.Addition:
-                        return left + right;
-                    case AbstractBinaryOperatorKind.Subtraction:
-                        return left - right;
-                    case AbstractBinaryOperatorKind.Multiplication:
-                        return left * right;
-                    case AbstractBinaryOperatorKind.Division:
-                        return left / right;
-                    case AbstractBinaryOperatorKind.Modulo:
-                        return left % right;
-                    case AbstractBinaryOperatorKind.Power:
-                        return (int) Math.Pow(left, right);
-                    default:
-                        throw new Exception($"Unexpected binary operator {b.OperatorKind}");
-                }
+                    AbstractBinaryOperatorKind.Addition => ((int)left + (int)right),
+                    AbstractBinaryOperatorKind.Subtraction => ((int)left - (int)right),
+                    AbstractBinaryOperatorKind.Multiplication => ((int)left * (int)right),
+                    AbstractBinaryOperatorKind.Division => ((int)left / (int)right),
+                    AbstractBinaryOperatorKind.Modulo => ((int)left % (int)right),
+                    AbstractBinaryOperatorKind.Power => (int) Math.Pow((int)left, (int)right),
+                    AbstractBinaryOperatorKind.Conjunction => (bool)left && (bool)right,
+                    AbstractBinaryOperatorKind.Disjunction => (bool)left || (bool)right,
+                    
+                    _ => throw new Exception($"Unexpected binary operator {b.OperatorKind}")
+                };
             }
 
             throw new Exception($"Unexpected node {node.Kind}");

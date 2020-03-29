@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Gatsby.CodeAnalysis.Syntax;
 
 namespace Gatsby.CodeAnalysis.AbstractSyntax
@@ -38,7 +39,7 @@ namespace Gatsby.CodeAnalysis.AbstractSyntax
 
             if (boundOperatorKind == null)
             {
-                _diagnostics.Add($"Unary operator '{syntax.OperatorToken.Text}' is not defined for type {boundOperand.Type}.");
+                _diagnostics.Add($"Unrecognized Unary operator '{syntax.OperatorToken.Text}' is not defined for type {boundOperand.Type}.");
                 return boundOperand;
             }
 
@@ -63,32 +64,65 @@ namespace Gatsby.CodeAnalysis.AbstractSyntax
 
         private AbstractUnaryOperatorKind? AbstractUnaryOperatorKind(TokenType kind, Type operandType)
         {
-            if (operandType != typeof(int))
-                return  null;
-
-            return kind switch
+            //Arithmetic Bindings
+            if (operandType == typeof(int))
             {
-                TokenType.Plus => AbstractSyntax.AbstractUnaryOperatorKind.Identity,
-                TokenType.Minus => AbstractSyntax.AbstractUnaryOperatorKind.Negation,
-                _ => throw new Exception($"Unrecognized Unary Operator {kind}")
-            };
+                return kind switch
+                {
+                    TokenType.Plus => AbstractSyntax.AbstractUnaryOperatorKind.Identity,
+                    TokenType.Minus => AbstractSyntax.AbstractUnaryOperatorKind.Negation,
+                    _ => throw new Exception($"Unrecognized Arithmetic Unary Operator {kind}")
+                };
+            }
+            
+            else if (operandType == typeof(bool))
+            {
+                return kind switch
+                {
+                    TokenType.Negation => AbstractSyntax.AbstractUnaryOperatorKind.LogicalNegation,
+                    _ => throw new Exception($"Unrecognized Binary Unary Operator {kind}")
+                };
+            }
+            
+            return null;
         }
 
         private AbstractBinaryOperatorKind? AbstractBinaryOperatorKind(TokenType kind, Type leftType, Type rightType)
         {
-            if (leftType != typeof(int) || rightType != typeof(int))
-                return  null;
-
-            return kind switch
+            //Arithmetic Binary Operators
+            if (leftType == typeof(int) && rightType == typeof(int))
             {
-                TokenType.Plus => AbstractSyntax.AbstractBinaryOperatorKind.Addition,
-                TokenType.Minus => AbstractSyntax.AbstractBinaryOperatorKind.Subtraction,
-                TokenType.Star => AbstractSyntax.AbstractBinaryOperatorKind.Multiplication,
-                TokenType.Slash => AbstractSyntax.AbstractBinaryOperatorKind.Division,
-                TokenType.Modulo => AbstractSyntax.AbstractBinaryOperatorKind.Modulo,
-                TokenType.Power => AbstractSyntax.AbstractBinaryOperatorKind.Power,
-                _ => throw new Exception($"Unrecognized Binary Operator {kind}")
-            };
+                return kind switch
+                {
+                    TokenType.Plus => AbstractSyntax.AbstractBinaryOperatorKind.Addition,
+                    TokenType.Minus => AbstractSyntax.AbstractBinaryOperatorKind.Subtraction,
+                    TokenType.Star => AbstractSyntax.AbstractBinaryOperatorKind.Multiplication,
+                    TokenType.Slash => AbstractSyntax.AbstractBinaryOperatorKind.Division,
+                    TokenType.Modulo => AbstractSyntax.AbstractBinaryOperatorKind.Modulo,
+                    TokenType.Power => AbstractSyntax.AbstractBinaryOperatorKind.Power,
+                    _ => throw new Exception($"Unrecognized Arithmetic Binary Operator {kind}")
+                };
+            }
+            
+            //Boolean Binary Operators
+            if (leftType == typeof(bool) && rightType == typeof(bool))
+            {
+                return kind switch
+                {
+                    TokenType.And => AbstractSyntax.AbstractBinaryOperatorKind.Conjunction,
+                    TokenType.Or => AbstractSyntax.AbstractBinaryOperatorKind.Disjunction,
+                    _ => throw new Exception($"Unrecognized Boolean Binary Operator {kind}")
+                };
+            }
+
+            //Mismatch bool-int pairing
+            if (leftType == typeof(bool) && rightType == typeof(int) ||
+                leftType == typeof(int) && rightType == typeof(bool))
+            {
+                throw new Exception($"Mismatch parse of operands {leftType} & {rightType}");
+            }
+
+            return null;
         }
     }
 }

@@ -112,7 +112,7 @@ namespace Gatsby.CodeAnalysis.Syntax
                 case TokenType.FalseKeyword:
                 {
                     var keywordToken = NextToken();
-                    var value = Current.Kind == TokenType.TrueKeyword;
+                    var value = keywordToken.Kind == TokenType.TrueKeyword;
                     return new LiteralExpressionSyntax(keywordToken, value);
                 }
                     
