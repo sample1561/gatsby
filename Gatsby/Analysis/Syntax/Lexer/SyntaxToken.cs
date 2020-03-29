@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Gatsby.Analysis.Syntax.Tree;
 
-namespace Gatsby.Analysis.Syntax
+namespace Gatsby.Analysis.Syntax.Lexer
 {
     public sealed class SyntaxToken : SyntaxNode
     {

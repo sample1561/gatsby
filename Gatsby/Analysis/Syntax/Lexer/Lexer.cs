@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using Gatsby.Analysis.Syntax.Parser;
 
-namespace Gatsby.Analysis.Syntax
+namespace Gatsby.Analysis.Syntax.Lexer
 {
     internal sealed class Lexer
     {
@@ -34,11 +35,14 @@ namespace Gatsby.Analysis.Syntax
             _position++;
         }
 
+        //Break input into corresponding lexemes
         public SyntaxToken Lex()
         {
+            //End of File 
             if (_position >= _text.Length)
                 return new SyntaxToken(TokenType.EndOfFile, _position, "\0", null);
 
+            //Integer
             if (char.IsDigit(Current))
             {
                 var start = _position;
@@ -49,11 +53,12 @@ namespace Gatsby.Analysis.Syntax
                 var length = _position - start;
                 var text = _text.Substring(start, length);
                 if (!int.TryParse(text, out var value))
-                    _diagnostics.Add($"The number {_text} isn't valid Int32.");
+                    _diagnostics.Add($"The number {_text} isn't INT32");
 
                 return new SyntaxToken(TokenType.Number, start, text, value);
             }
 
+            //Whitespace
             if (char.IsWhiteSpace(Current))
             {
                 var start = _position;
@@ -66,6 +71,7 @@ namespace Gatsby.Analysis.Syntax
                 return new SyntaxToken(TokenType.Whitespace, start, text, null);
             }
             
+            //True-False and catch-all identifiers
             if (char.IsLetter(Current))
             {
                 var start = _position;
@@ -79,6 +85,7 @@ namespace Gatsby.Analysis.Syntax
                 return new SyntaxToken(kind, start, text, null);
             }
 
+            //Operators - Arithmetic & Binary
             switch (Current)
             {
                 //Arithmetic Operators
@@ -94,54 +101,79 @@ namespace Gatsby.Analysis.Syntax
                 case '/':
                     return new SyntaxToken(TokenType.Slash, _position++, "/", null);
                 
-                //TODO maybe add inverse divide a\b == b/a
-                
+                case '\\':
+                    return new SyntaxToken(TokenType.ReverseSlash, _position++, "/", null);
+
                 case '%':
                     return new SyntaxToken(TokenType.Modulo, _position++, "%", null);
                 
                 case '^':
+                    return new SyntaxToken(TokenType.BitwiseXor, _position++, "^", null);
+                
+                case '#':
                     return new SyntaxToken(TokenType.Power, _position++, "^", null);
-                
-                //TODO a | b means a divides b. 
-                
+
                 //Boolean Operators
-                //TODO can this be use as a factorial operator?
+
                 case '!':
-                    return new SyntaxToken(TokenType.Negation, _position++, "!", null);
+                {
+                    if (Ahead != '=')
+                        return new SyntaxToken(TokenType.Negation, _position, "!", null);
+
+                    if (Ahead == '=')
+                        return new SyntaxToken(TokenType.NotEqualsTo, _position += 2, "!=", null);
+
+                    break;
+                }
 
                 case '&':
                 {
                     if (Ahead == '&')
-                    {
                         return new SyntaxToken(TokenType.LogicalAnd, _position += 2, "&&", null);
-                    }
 
-                    break;
+                    return new SyntaxToken(TokenType.BitwiseAnd, _position++, "&", null);
                 }
 
                 case '|':
                 {
                     if (Ahead == '|')
-                    {
                         return new SyntaxToken(TokenType.LogicalOr, _position += 2, "||", null);
-                    }
+
+                    return new SyntaxToken(TokenType.BitwiseOr, _position++, "&", null);
+                }
+                
+                case '=':
+                {
+                    if (Ahead == '=')
+                        return new SyntaxToken(TokenType.EqualsTo, _position += 2, "==",null);
 
                     break;
                 }
+
+                case '>':
+                {
+                    if (Ahead == '=')
+                        return new SyntaxToken(TokenType.GreaterThanEquals, _position += 2, ">=", null);
+
+                    if(Ahead == '>')
+                        return new SyntaxToken(TokenType.RightShift, _position += 2, ">>",null);
+
+                    return new SyntaxToken(TokenType.GreaterThan, _position ++, ">", null);
+                }
                 
-                //TODO bitwise operators
-                // - ~x	bitwise not
-                // - x & y	bitwise and
-                // - x | y	bitwise or
+                case '<':
+                {
+                    if (Ahead == '=')
+                        return new SyntaxToken(TokenType.LessThanEquals, _position += 2, "<=", null);
+
+                    if(Ahead == '<')
+                        return new SyntaxToken(TokenType.LeftShift, _position += 2, "<<",null);
+
+                    return new SyntaxToken(TokenType.LessThan, _position ++, "<", null);
+                }
                 
-                //TODO Comparative Operators
-                //- ==
-                //- !=
-                // <=
-                // >= 
-                // > 
-                // <
-                
+                case '~':
+                    return new SyntaxToken(TokenType.BitwiseNegation, _position++, "~", null);
 
                 case '(':
                     return new SyntaxToken(TokenType.OpenParenthesis, _position++, "(", null);

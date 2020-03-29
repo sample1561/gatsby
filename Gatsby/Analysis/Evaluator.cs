@@ -1,13 +1,14 @@
 ﻿using System;
-using Gatsby.Analysis.AbstractSyntax;
+using Gatsby.Analysis.SemanticSyntax.Expression;
+using Gatsby.Analysis.SemanticSyntax.Operator.OperatorKind;
 
 namespace Gatsby.Analysis
 {
     internal sealed class Evaluator
     {
-        private readonly AbstractExpression _root;
+        private readonly SemanticExpression _root;
 
-        public Evaluator(AbstractExpression root)
+        public Evaluator(SemanticExpression root)
         {
             _root = root;
         }
@@ -17,39 +18,59 @@ namespace Gatsby.Analysis
             return EvaluateExpression(_root);
         }
 
-        private object EvaluateExpression(AbstractExpression node)
+        private object EvaluateExpression(SemanticExpression node)
         {
-            if (node is AbstractLiteralExpression n)
+            if (node is SemanticLiteralExpression n)
                 return n.Value;
 
-            if (node is AbstractUnaryExpression u)
+            if (node is SemanticUnaryExpression u)
             {
                 var operand = EvaluateExpression(u.Operand);
 
                 return u.Operator.Kind switch
                 {
-                    AbstractUnaryOperatorKind.Identity => (object) (int) operand,
-                    AbstractUnaryOperatorKind.Negative => (-1 * (int) operand),
-                    AbstractUnaryOperatorKind.LogicalNegation => !(bool) operand,
+                    SemanticUnaryOperatorKind.Identity => (object) (int) operand,
+                    SemanticUnaryOperatorKind.Negative => (-1 * (int) operand),
+                    SemanticUnaryOperatorKind.LogicalNegation => !(bool) operand,
+                    SemanticUnaryOperatorKind.BitwiseNegation => ~(int)operand, 
                     _ => throw new Exception($"Unexpected unary operator {u.Operator.Kind}")
                 };
             }
 
-            if (node is AbstractBinaryExpression b)
+            if (node is SemanticBinaryExpression b)
             {
                 var left = EvaluateExpression(b.Left);
                 var right = EvaluateExpression(b.Right);
 
                 return b.Operator.Kind switch
                 {
-                    AbstractBinaryOperatorKind.Addition => ((int)left + (int)right),
-                    AbstractBinaryOperatorKind.Subtraction => ((int)left - (int)right),
-                    AbstractBinaryOperatorKind.Multiplication => ((int)left * (int)right),
-                    AbstractBinaryOperatorKind.Division => ((int)left / (int)right),
-                    AbstractBinaryOperatorKind.Modulo => ((int)left % (int)right),
-                    AbstractBinaryOperatorKind.Power => (int) Math.Pow((int)left, (int)right),
-                    AbstractBinaryOperatorKind.Conjunction => (bool)left && (bool)right,
-                    AbstractBinaryOperatorKind.Disjunction => (bool)left || (bool)right,
+                    SemanticBinaryOperatorKind.Addition => ((int)left + (int)right),
+                    SemanticBinaryOperatorKind.Subtraction => ((int)left - (int)right),
+                    
+                    SemanticBinaryOperatorKind.Multiplication => ((int)left * (int)right),
+                    SemanticBinaryOperatorKind.Division => ((int)left / (int)right),
+                    SemanticBinaryOperatorKind.ReverseDivision => ((int)right / (int)left),
+                    SemanticBinaryOperatorKind.Modulo => ((int)left % (int)right),
+                    
+                    SemanticBinaryOperatorKind.Power => (int) Math.Pow((int)left, (int)right),
+                    
+                    SemanticBinaryOperatorKind.Conjunction => (bool)left && (bool)right,
+                    SemanticBinaryOperatorKind.Disjunction => (bool)left || (bool)right,
+                    
+                    SemanticBinaryOperatorKind.EqualsTo => Equals(left,right), 
+                    SemanticBinaryOperatorKind.NotEqualsTo => !Equals(left,right), 
+                    
+                    SemanticBinaryOperatorKind.GreaterThan => (int)left > (int)right,
+                    SemanticBinaryOperatorKind.GreaterThanEquals => (int)left >= (int)right, 
+                    
+                    SemanticBinaryOperatorKind.LessThan => (int)left < (int)right, 
+                    SemanticBinaryOperatorKind.LessThanEquals => (int)left <= (int)right, 
+                    
+                    SemanticBinaryOperatorKind.BitwiseAnd => (int)left & (int)right, 
+                    SemanticBinaryOperatorKind.BitwiseOr => (int)left | (int)right,
+                    SemanticBinaryOperatorKind.BitwiseXor => (int)left ^ (int)right,
+                    SemanticBinaryOperatorKind.LeftShift => (int)left << (int)right,
+                    SemanticBinaryOperatorKind.RightShift => (int)left >> (int)right,
                     
                     _ => throw new Exception($"Unexpected binary operator {b.Operator}")
                 };

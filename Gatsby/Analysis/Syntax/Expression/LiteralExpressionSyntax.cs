@@ -1,9 +1,15 @@
 using System.Collections.Generic;
+using Gatsby.Analysis.Syntax.Lexer;
+using Gatsby.Analysis.Syntax.Tree;
 
-namespace Gatsby.Analysis.Syntax
+namespace Gatsby.Analysis.Syntax.Expression
 {
     public sealed class LiteralExpressionSyntax : ExpressionSyntax
     {
+        public override TokenType Kind => TokenType.LiteralExpression;
+        public SyntaxToken LiteralToken { get; }
+        public object Value { get; }
+        
         public LiteralExpressionSyntax(SyntaxToken literalToken)
             : this(literalToken, literalToken.Value)
         {
@@ -15,9 +21,6 @@ namespace Gatsby.Analysis.Syntax
             Value = value;
         }
 
-        public override TokenType Kind => TokenType.LiteralExpression;
-        public SyntaxToken LiteralToken { get; }
-        public object Value { get; }
 
         public override IEnumerable<SyntaxNode> GetChildren()
         {

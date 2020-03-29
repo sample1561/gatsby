@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Linq;
 using Gatsby.Analysis;
-using Gatsby.Analysis.AbstractSyntax;
+using Gatsby.Analysis.SemanticSyntax;
 using Gatsby.Analysis.Syntax;
+using Gatsby.Analysis.Syntax.Lexer;
+using Gatsby.Analysis.Syntax.Parser;
+using Gatsby.Analysis.Syntax.Tree;
 
 namespace Gatsby
 {
@@ -46,8 +49,8 @@ namespace Gatsby
                 }
 
                 var syntaxTree = SyntaxTree.Parse(line);
-                var binder = new AbstractBinder();
-                var abstractExpression = binder.AbstractExpression(syntaxTree.Root);
+                var binder = new SemanticBinder();
+                var abstractExpression = binder.SemanticExpression(syntaxTree.Root);
 
                 var diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
 

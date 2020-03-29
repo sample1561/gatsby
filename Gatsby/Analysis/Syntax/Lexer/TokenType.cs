@@ -1,4 +1,4 @@
-namespace Gatsby.Analysis.Syntax
+namespace Gatsby.Analysis.Syntax.Lexer
 {
     public enum TokenType
     {
@@ -11,6 +11,7 @@ namespace Gatsby.Analysis.Syntax
         Minus,
         Star,
         Slash,
+        ReverseSlash,
         Modulo,
         LogicalAnd,
         LogicalOr,
@@ -19,6 +20,18 @@ namespace Gatsby.Analysis.Syntax
         OpenParenthesis,
         CloseParenthesis,
         Identifier,
+        EqualsTo,
+        NotEqualsTo,
+        LessThan,
+        LessThanEquals,
+        GreaterThan,
+        GreaterThanEquals,
+        BitwiseAnd,
+        BitwiseOr,
+        BitwiseXor,
+        BitwiseNegation,
+        LeftShift,
+        RightShift,
 
         // Expressions
         LiteralExpression,
@@ -28,6 +41,6 @@ namespace Gatsby.Analysis.Syntax
 
         //Keywords
         TrueKeyword,
-        FalseKeyword,
+        FalseKeyword
     }
 }

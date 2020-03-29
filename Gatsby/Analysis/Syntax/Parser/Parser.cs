@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Gatsby.Analysis.Syntax.Expression;
+using Gatsby.Analysis.Syntax.Lexer;
+using Gatsby.Analysis.Syntax.Tree;
 
-namespace Gatsby.Analysis.Syntax
+namespace Gatsby.Analysis.Syntax.Parser
 {
     internal sealed class Parser
     {
@@ -14,7 +17,7 @@ namespace Gatsby.Analysis.Syntax
         {
             var tokens = new List<SyntaxToken>();
 
-            var lexer = new Lexer(text);
+            var lexer = new Lexer.Lexer(text);
             SyntaxToken token;
             do
             {

@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Gatsby.Analysis.Syntax.Expression;
+using Gatsby.Analysis.Syntax.Lexer;
 
-namespace Gatsby.Analysis.Syntax
+namespace Gatsby.Analysis.Syntax.Tree
 {
     public sealed class SyntaxTree
     {
@@ -18,7 +20,7 @@ namespace Gatsby.Analysis.Syntax
 
         public static SyntaxTree Parse(string text)
         {
-            var parser = new Parser(text);
+            var parser = new Parser.Parser(text);
             return parser.Parse();
         }
     }
