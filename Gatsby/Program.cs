@@ -14,7 +14,7 @@ namespace Gatsby
         private static void Main()
         {
             var showTree = false;
-            var showTokenization = false;
+            var showToken = true;
 
             while (true)
             {
@@ -28,17 +28,13 @@ namespace Gatsby
                 {
                     showTree = !showTree;
                     Console.WriteLine(showTree ? "Showing parse trees." : "Not showing parse trees");
-                    
-                    //As we now want another line to scan
                     continue;
                 }
                 
-                if (line == "#stream")
+                if (line == "#stream" || line == "#token")
                 {
-                    showTokenization = !showTokenization;
-                    Console.WriteLine(showTree ? "Showing Tokenization" : "Not showing Tokenization");
-                    
-                    //As we now want another line to scan
+                    showToken = !showToken;
+                    Console.WriteLine(showToken ? "Showing Tokenization" : "Not showing Tokenization");
                     continue;
                 }
                 
@@ -63,7 +59,7 @@ namespace Gatsby
                     Console.ResetColor();
                 }
                 
-                if (showTokenization)
+                if (showToken)
                 {
                     Console.ForegroundColor = ConsoleColor.Blue;                
                     var parser = new Parser(line);

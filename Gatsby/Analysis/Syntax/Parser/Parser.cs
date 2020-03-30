@@ -156,7 +156,7 @@ namespace Gatsby.Analysis.Syntax.Parser
         {
             foreach(var token in _tokens)
             {
-                Console.Write($"{token.Kind}\t{token.Text}+\t{token.Position}\t{token.Value}");
+                Console.WriteLine($"Type = {token.Kind}\tText = '{token.Text}'\tPosition = {token.Position}\tValue = {token.Value}");
             }
         }
     }
