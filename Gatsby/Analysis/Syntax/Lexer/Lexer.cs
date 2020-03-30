@@ -23,11 +23,7 @@ namespace Gatsby.Analysis.Syntax.Lexer
         private char Peek(int offset)
         {
             var index = _position + offset;
-            
-            if (index >= _text.Length)
-                    return '\0';
-
-            return _text[index];
+            return index >= _text.Length ? '\0' : _text[index];
         }
 
         private void Next()
@@ -85,6 +81,7 @@ namespace Gatsby.Analysis.Syntax.Lexer
                 return new SyntaxToken(kind, start, text, null);
             }
 
+            //TODO refactor this for readability & scalability
             //Operators - Arithmetic & Binary
             switch (Current)
             {
@@ -147,29 +144,34 @@ namespace Gatsby.Analysis.Syntax.Lexer
                     if (Ahead == '=')
                         return new SyntaxToken(TokenType.EqualsTo, _position += 2, "==",null);
 
+                    //We haven't implemented the assignment operator
                     break;
                 }
 
                 case '>':
                 {
-                    if (Ahead == '=')
-                        return new SyntaxToken(TokenType.GreaterThanEquals, _position += 2, ">=", null);
-
-                    if(Ahead == '>')
-                        return new SyntaxToken(TokenType.RightShift, _position += 2, ">>",null);
-
-                    return new SyntaxToken(TokenType.GreaterThan, _position ++, ">", null);
+                    switch (Ahead)
+                    {
+                        case '=':
+                            return new SyntaxToken(TokenType.GreaterThanEquals, _position += 2, ">=", null);
+                        case '>':
+                            return new SyntaxToken(TokenType.RightShift, _position += 2, ">>",null);
+                        default:
+                            return new SyntaxToken(TokenType.GreaterThan, _position ++, ">", null);
+                    }
                 }
                 
                 case '<':
                 {
-                    if (Ahead == '=')
-                        return new SyntaxToken(TokenType.LessThanEquals, _position += 2, "<=", null);
-
-                    if(Ahead == '<')
-                        return new SyntaxToken(TokenType.LeftShift, _position += 2, "<<",null);
-
-                    return new SyntaxToken(TokenType.LessThan, _position ++, "<", null);
+                    switch (Ahead)
+                    {
+                        case '=':
+                            return new SyntaxToken(TokenType.LessThanEquals, _position += 2, "<=", null);
+                        case '<':
+                            return new SyntaxToken(TokenType.LeftShift, _position += 2, "<<",null);
+                        default:
+                            return new SyntaxToken(TokenType.LessThan, _position ++, "<", null);
+                    }
                 }
                 
                 case '~':

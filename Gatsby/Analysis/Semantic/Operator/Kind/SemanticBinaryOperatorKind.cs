@@ -1,4 +1,4 @@
-namespace Gatsby.Analysis.SemanticSyntax.Operator.OperatorKind
+namespace Gatsby.Analysis.Semantic.Operator.Kind
 {
     internal enum SemanticBinaryOperatorKind
     {

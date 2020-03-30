@@ -1,8 +1,8 @@
 ﻿using System;
-using Gatsby.Analysis.SemanticSyntax.Operator.OperatorKind;
+using Gatsby.Analysis.Semantic.Operator.Kind;
 using Gatsby.Analysis.Syntax.Lexer;
 
-namespace Gatsby.Analysis.SemanticSyntax.Operator
+namespace Gatsby.Analysis.Semantic.Operator
 {
     internal sealed class SemanticUnaryOperator
     {

@@ -10,7 +10,7 @@ namespace Gatsby.Analysis.Syntax.Parser
     {
         private readonly SyntaxToken[] _tokens;
 
-        private List<string> _diagnostics = new List<string>();
+        private readonly List<string> _diagnostics = new List<string>();
         private int _position;
 
         public Parser(string text)
@@ -39,10 +39,7 @@ namespace Gatsby.Analysis.Syntax.Parser
         private SyntaxToken Peek(int offset)
         {
             var index = _position + offset;
-            if (index >= _tokens.Length)
-                return _tokens[_tokens.Length - 1];
-
-            return _tokens[index];
+            return index >= _tokens.Length ? _tokens[^1] : _tokens[index];
         }
 
         private SyntaxToken Current => Peek(0);
@@ -59,7 +56,8 @@ namespace Gatsby.Analysis.Syntax.Parser
             if (Current.Kind == kind)
                 return NextToken();
 
-            _diagnostics.Add($"ERROR: Unexpected token <{Current.Kind}>, expected <{kind}>");
+            _diagnostics.Add($"ERROR: Unexpected token <{Current.Kind}>, " +
+                             $"expected <{kind}>");
             return new SyntaxToken(kind, Current.Position, null, null);
         }
 
@@ -74,7 +72,8 @@ namespace Gatsby.Analysis.Syntax.Parser
         {
             ExpressionSyntax left;
             var unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
-            if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence)
+            if (unaryOperatorPrecedence != 0 && 
+                unaryOperatorPrecedence >= parentPrecedence)
             {
                 var operatorToken = NextToken();
                 var operand = ParseExpression(unaryOperatorPrecedence);
@@ -108,7 +107,9 @@ namespace Gatsby.Analysis.Syntax.Parser
                     var left = NextToken();
                     var expression = ParseExpression();
                     var right = MatchToken(TokenType.CloseParenthesis);
-                    return new ParenthesizedExpressionSyntax(left, expression, right);
+                    
+                    return new ParenthesizedExpressionSyntax(left, 
+                        expression, right);
                 }
 
                 case TokenType.TrueKeyword:

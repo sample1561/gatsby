@@ -1,8 +1,8 @@
 using System;
-using Gatsby.Analysis.SemanticSyntax.Node;
-using Gatsby.Analysis.SemanticSyntax.Operator;
+using Gatsby.Analysis.Semantic.Node;
+using Gatsby.Analysis.Semantic.Operator;
 
-namespace Gatsby.Analysis.SemanticSyntax.Expression
+namespace Gatsby.Analysis.Semantic.Expression
 {
     internal sealed class SemanticBinaryExpression : SemanticExpression
     {
@@ -13,7 +13,8 @@ namespace Gatsby.Analysis.SemanticSyntax.Expression
         public SemanticBinaryOperator Operator { get; }
         public SemanticExpression Right { get; }
         
-        public SemanticBinaryExpression(SemanticExpression left, SemanticBinaryOperator op, SemanticExpression right)
+        public SemanticBinaryExpression(SemanticExpression left, 
+            SemanticBinaryOperator op, SemanticExpression right)
         {
             Left = left;
             Operator = op;

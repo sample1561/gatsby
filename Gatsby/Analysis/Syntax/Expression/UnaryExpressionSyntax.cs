@@ -10,7 +10,8 @@ namespace Gatsby.Analysis.Syntax.Expression
         public SyntaxToken OperatorToken { get; }
         public ExpressionSyntax Operand { get; }
         
-        public UnaryExpressionSyntax(SyntaxToken operatorToken, ExpressionSyntax operand)
+        public UnaryExpressionSyntax(SyntaxToken operatorToken, 
+            ExpressionSyntax operand)
         {
             OperatorToken = operatorToken;
             Operand = operand;

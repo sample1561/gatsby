@@ -1,4 +1,4 @@
-namespace Gatsby.Analysis.SemanticSyntax.Node
+namespace Gatsby.Analysis.Semantic.Node
 {
     internal enum SemanticNodeKind
     {

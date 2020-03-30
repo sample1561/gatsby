@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Gatsby.Analysis;
-using Gatsby.Analysis.SemanticSyntax;
+using Gatsby.Analysis.Semantic;
 using Gatsby.Analysis.Syntax;
 using Gatsby.Analysis.Syntax.Lexer;
 using Gatsby.Analysis.Syntax.Parser;

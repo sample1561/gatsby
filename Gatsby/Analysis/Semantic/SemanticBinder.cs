@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Gatsby.Analysis.SemanticSyntax.Expression;
-using Gatsby.Analysis.SemanticSyntax.Operator;
+using Gatsby.Analysis.Semantic.Expression;
+using Gatsby.Analysis.Semantic.Operator;
 using Gatsby.Analysis.Syntax.Expression;
 using Gatsby.Analysis.Syntax.Lexer;
 
-namespace Gatsby.Analysis.SemanticSyntax
+namespace Gatsby.Analysis.Semantic
 {
     internal sealed class SemanticBinder
     {
@@ -35,13 +35,13 @@ namespace Gatsby.Analysis.SemanticSyntax
             var boundOperand = SemanticExpression(syntax.Operand);
             var boundOperator = SemanticUnaryOperator.Bind(syntax.OperatorToken.Kind, boundOperand.Type);
 
-            if (boundOperator == null)
-            {
-                _diagnostics.Add($"Unrecognized Unary operator '{syntax.OperatorToken.Text}' is not defined for type {boundOperand.Type}.");
-                return boundOperand;
-            }
+            if (boundOperator != null) 
+                return new SemanticUnaryExpression(boundOperator, boundOperand);
+            
+            _diagnostics.Add($"Unrecognized Unary operator '{syntax.OperatorToken.Text}' " +
+                             $"is not defined for type {boundOperand.Type}.");
+            return boundOperand;
 
-            return new SemanticUnaryExpression(boundOperator, boundOperand);
         }
 
         private SemanticExpression SemanticBinaryExpression(BinaryExpressionSyntax syntax)
@@ -51,13 +51,13 @@ namespace Gatsby.Analysis.SemanticSyntax
             var boundRight = SemanticExpression(syntax.Right);
             var boundOperator = SemanticBinaryOperator.Bind(syntax.OperatorToken.Kind, boundLeft.Type, boundRight.Type);
 
-            if (boundOperator == null)
-            {
-                _diagnostics.Add($"Binary operator '{syntax.OperatorToken.Text}' is not defined for types {boundLeft.Type} and {boundRight.Type}.");
-                return boundLeft;
-            }
-
-            return new SemanticBinaryExpression(boundLeft, boundOperator, boundRight);
+            if (boundOperator != null) 
+                return new SemanticBinaryExpression(boundLeft, boundOperator, boundRight);
+            
+            _diagnostics.Add($"Binary operator '{syntax.OperatorToken.Text}' " +
+                             $"is not defined for types {boundLeft.Type} and {boundRight.Type}.");
+            
+            return boundLeft;
         }
     }
 }

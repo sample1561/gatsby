@@ -1,8 +1,8 @@
 using System;
-using Gatsby.Analysis.SemanticSyntax.Node;
-using Gatsby.Analysis.SemanticSyntax.Operator;
+using Gatsby.Analysis.Semantic.Node;
+using Gatsby.Analysis.Semantic.Operator;
 
-namespace Gatsby.Analysis.SemanticSyntax.Expression
+namespace Gatsby.Analysis.Semantic.Expression
 {
     internal sealed class SemanticUnaryExpression : SemanticExpression
     {
@@ -12,7 +12,8 @@ namespace Gatsby.Analysis.SemanticSyntax.Expression
         public SemanticUnaryOperator Operator { get; }
         public SemanticExpression Operand { get; }
         
-        public SemanticUnaryExpression(SemanticUnaryOperator op, SemanticExpression operand)
+        public SemanticUnaryExpression(SemanticUnaryOperator op, 
+            SemanticExpression operand)
         {
             Operator = op;
             Operand = operand;

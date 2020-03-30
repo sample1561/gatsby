@@ -1,7 +1,7 @@
 using System;
-using Gatsby.Analysis.SemanticSyntax.Node;
+using Gatsby.Analysis.Semantic.Node;
 
-namespace Gatsby.Analysis.SemanticSyntax.Expression
+namespace Gatsby.Analysis.Semantic.Expression
 {
     internal abstract class SemanticExpression : SemanticNode
     {
