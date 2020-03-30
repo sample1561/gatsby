@@ -20,6 +20,7 @@ namespace Gatsby.Analysis
 
         private object EvaluateExpression(SemanticExpression node)
         {
+            //Convert the semantic representation into a concrete one
             switch (node)
             {
                 case SemanticLiteralExpression n:

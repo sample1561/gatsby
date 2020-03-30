@@ -13,7 +13,7 @@ namespace Gatsby
     {        
         private static void Main()
         {
-            var showTree = true;
+            var showTree = false;
             var showTokenization = false;
 
             while (true)
@@ -50,6 +50,8 @@ namespace Gatsby
 
                 var syntaxTree = SyntaxTree.Parse(line);
                 var binder = new SemanticBinder();
+                
+                //Convert the parse tree to a semantic tree 
                 var abstractExpression = binder.SemanticExpression(syntaxTree.Root);
 
                 var diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();

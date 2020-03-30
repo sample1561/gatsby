@@ -4,6 +4,7 @@ using Gatsby.Analysis.Syntax.Tree;
 
 namespace Gatsby.Analysis.Syntax.Expression
 {
+    //Represents Variables in the tree
     public sealed class LiteralExpressionSyntax : ExpressionSyntax
     {
         public override TokenType Kind => TokenType.LiteralExpression;

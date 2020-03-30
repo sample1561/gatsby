@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Xml;
 using Gatsby.Analysis.Syntax.Expression;
 using Gatsby.Analysis.Syntax.Lexer;
 using Gatsby.Analysis.Syntax.Tree;
@@ -44,6 +45,7 @@ namespace Gatsby.Analysis.Syntax.Parser
 
         private SyntaxToken Current => Peek(0);
 
+        //Return the current token but move the position
         private SyntaxToken NextToken()
         {
             var current = Current;
@@ -53,6 +55,7 @@ namespace Gatsby.Analysis.Syntax.Parser
 
         private SyntaxToken MatchToken(TokenType kind)
         {
+            //Move the position if we the correct epected token
             if (Current.Kind == kind)
                 return NextToken();
 
@@ -65,20 +68,23 @@ namespace Gatsby.Analysis.Syntax.Parser
         {
             var expresion = ParseExpression();
             var endOfFileToken = MatchToken(TokenType.EndOfFile);
-            return new SyntaxTree(_diagnostics, expresion, endOfFileToken);
+            return new SyntaxTree(expresion, endOfFileToken, _diagnostics);
         }
 
         private ExpressionSyntax ParseExpression(int parentPrecedence = 0)
         {
             ExpressionSyntax left;
             var unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
-            if (unaryOperatorPrecedence != 0 && 
-                unaryOperatorPrecedence >= parentPrecedence)
+            
+            if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence)
             {
                 var operatorToken = NextToken();
                 var operand = ParseExpression(unaryOperatorPrecedence);
+                
+                //Create new Left branch for the current expression
                 left = new UnaryExpressionSyntax(operatorToken, operand);
             }
+            
             else
             {
                 left = ParsePrimaryExpression();
@@ -87,17 +93,32 @@ namespace Gatsby.Analysis.Syntax.Parser
             while (true)
             {
                 var precedence = Current.Kind.GetBinaryOperatorPrecedence();
+                
+                /* Current is not a binary operator of the operand it weaker
+                 * Then the previous operator, 1 * 2 + 3
+                 * * > + hence it will return left, ie, 2 to create
+                 *
+                 *         +
+                 *       /  \
+                 *     *     3
+                 *    / \     
+                 *   1   2
+                 */
+                 
+                
                 if (precedence == 0 || precedence <= parentPrecedence)
                     break;
 
                 var operatorToken = NextToken();
                 var right = ParseExpression(precedence);
+                
+                //Substitute the left branch with a new subtree
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
 
             return left;
         }
-
+        
         private ExpressionSyntax ParsePrimaryExpression()
         {
             switch (Current.Kind)
@@ -106,6 +127,8 @@ namespace Gatsby.Analysis.Syntax.Parser
                 {
                     var left = NextToken();
                     var expression = ParseExpression();
+                    
+                    //Create virtual closed paren token
                     var right = MatchToken(TokenType.CloseParenthesis);
                     
                     return new ParenthesizedExpressionSyntax(left, 
@@ -122,6 +145,7 @@ namespace Gatsby.Analysis.Syntax.Parser
                     
                 default:
                 {
+                    //Create a virtual number token as that is the only possible node
                     var numberToken = MatchToken(TokenType.Number);
                     return new LiteralExpressionSyntax(numberToken);
                 }

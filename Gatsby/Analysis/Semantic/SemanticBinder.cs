@@ -46,7 +46,6 @@ namespace Gatsby.Analysis.Semantic
 
         private SemanticExpression SemanticBinaryExpression(BinaryExpressionSyntax syntax)
         {
-            //Console.Write(syntax.Left.GetType());
             var boundLeft = SemanticExpression(syntax.Left);
             var boundRight = SemanticExpression(syntax.Right);
             var boundOperator = SemanticBinaryOperator.Bind(syntax.OperatorToken.Kind, boundLeft.Type, boundRight.Type);

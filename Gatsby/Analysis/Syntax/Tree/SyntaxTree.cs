@@ -7,12 +7,12 @@ namespace Gatsby.Analysis.Syntax.Tree
 {
     public sealed class SyntaxTree
     {
-        public SyntaxTree(IEnumerable<string> diagnostics, 
-            ExpressionSyntax root, SyntaxToken endOfFileToken)
+        public SyntaxTree(ExpressionSyntax root, SyntaxToken endOfFileToken,
+            IEnumerable<string> diagnostics)
         {
-            Diagnostics = diagnostics.ToArray();
             Root = root;
             EndOfFileToken = endOfFileToken;
+            Diagnostics = diagnostics.ToArray();
         }
 
         public IReadOnlyList<string> Diagnostics { get; }
