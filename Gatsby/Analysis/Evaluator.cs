@@ -1,9 +1,53 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Gatsby.Analysis.Semantic;
 using Gatsby.Analysis.Semantic.Expression;
 using Gatsby.Analysis.Semantic.Operator.Kind;
+using Gatsby.Analysis.Syntax.Tree;
 
 namespace Gatsby.Analysis
 {
+
+    public class Compilation
+    {
+        public SyntaxTree Syntax { get;  }
+
+        public Compilation(SyntaxTree syntax)
+        {
+            Syntax = syntax;
+        }
+
+        public EvaluationResult Evaluate()
+        {
+            var binder = new SemanticBinder();
+            var boundExpression = binder.SemanticExpression(Syntax.Root);
+
+            var diagnostics = Syntax.Diagnostics.Concat(binder.Diagnostics).ToArray();
+
+            if (diagnostics.Any())
+                return new EvaluationResult(diagnostics,null);
+
+            var evaluator = new Evaluator(boundExpression);
+            var value = evaluator.Evaluate();
+            
+            return new EvaluationResult(Array.Empty<string>(),value);
+        }
+    }
+
+    public sealed class EvaluationResult
+    {
+        public IReadOnlyList<string> Diagnostics { get; }
+        public object Value { get; }
+
+        public EvaluationResult(IEnumerable<string> diagnostics, object value)
+        {
+            Diagnostics = diagnostics.ToArray();
+            Value = value;
+        }
+    }
+    
     internal sealed class Evaluator
     {
         private readonly SemanticExpression _root;

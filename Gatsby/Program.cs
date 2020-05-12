@@ -14,7 +14,7 @@ namespace Gatsby
         private static void Main()
         {
             var showTree = false;
-            var showToken = true;
+            var showToken = false;
 
             while (true)
             {
@@ -45,12 +45,10 @@ namespace Gatsby
                 }
 
                 var syntaxTree = SyntaxTree.Parse(line);
-                var binder = new SemanticBinder();
+                var compilation = new Compilation(syntaxTree);
+                var result = compilation.Evaluate();
                 
-                //Convert the parse tree to a semantic tree 
-                var abstractExpression = binder.SemanticExpression(syntaxTree.Root);
-
-                var diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
+                var diagnostics = result.Diagnostics;
 
                 if (showTree)
                 {
@@ -69,9 +67,7 @@ namespace Gatsby
 
                 if (!diagnostics.Any())
                 {
-                    var e = new Evaluator(abstractExpression);
-                    var result = e.Evaluate();
-                    Console.WriteLine(result);
+                    Console.WriteLine(result.Value);
                 }
                 
                 else
@@ -102,7 +98,7 @@ namespace Gatsby
 
             Console.WriteLine();
             
-            indent += isLastChild ? "   " : "│   ";
+            indent += isLastChild ? "   " : "│  ";
 
             var lastChild = node.GetChildren().LastOrDefault();
 

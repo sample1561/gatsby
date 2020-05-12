@@ -125,18 +125,20 @@ namespace Gatsby.Analysis.Syntax.Lexer
 
                 case '&':
                 {
-                    if (Ahead == '&')
-                        return new SyntaxToken(TokenType.LogicalAnd, _position += 2, "&&", null);
-
-                    return new SyntaxToken(TokenType.BitwiseAnd, _position++, "&", null);
+                    return Ahead switch
+                    {
+                        '&' => new SyntaxToken(TokenType.LogicalAnd, _position += 2, "&&", null),
+                        _ => new SyntaxToken(TokenType.BitwiseAnd, _position++, "&", null)
+                    };
                 }
 
                 case '|':
                 {
-                    if (Ahead == '|')
-                        return new SyntaxToken(TokenType.LogicalOr, _position += 2, "||", null);
-
-                    return new SyntaxToken(TokenType.BitwiseOr, _position++, "&", null);
+                    return Ahead switch
+                    {
+                        '|' => new SyntaxToken(TokenType.LogicalOr, _position += 2, "||", null),
+                        _ => new SyntaxToken(TokenType.BitwiseOr, _position++, "&", null)
+                    };
                 }
                 
                 case '=':
@@ -150,28 +152,22 @@ namespace Gatsby.Analysis.Syntax.Lexer
 
                 case '>':
                 {
-                    switch (Ahead)
+                    return Ahead switch
                     {
-                        case '=':
-                            return new SyntaxToken(TokenType.GreaterThanEquals, _position += 2, ">=", null);
-                        case '>':
-                            return new SyntaxToken(TokenType.RightShift, _position += 2, ">>",null);
-                        default:
-                            return new SyntaxToken(TokenType.GreaterThan, _position ++, ">", null);
-                    }
+                        '=' => new SyntaxToken(TokenType.GreaterThanEquals, _position += 2, ">=", null),
+                        '>' => new SyntaxToken(TokenType.RightShift, _position += 2, ">>", null),
+                        _ => new SyntaxToken(TokenType.GreaterThan, _position++, ">", null)
+                    };
                 }
                 
                 case '<':
                 {
-                    switch (Ahead)
+                    return Ahead switch
                     {
-                        case '=':
-                            return new SyntaxToken(TokenType.LessThanEquals, _position += 2, "<=", null);
-                        case '<':
-                            return new SyntaxToken(TokenType.LeftShift, _position += 2, "<<",null);
-                        default:
-                            return new SyntaxToken(TokenType.LessThan, _position ++, "<", null);
-                    }
+                        '=' => new SyntaxToken(TokenType.LessThanEquals, _position += 2, "<=", null),
+                        '<' => new SyntaxToken(TokenType.LeftShift, _position += 2, "<<", null),
+                        _ => new SyntaxToken(TokenType.LessThan, _position++, "<", null)
+                    };
                 }
                 
                 case '~':

@@ -7,7 +7,7 @@ namespace Gatsby.Analysis.Semantic.Expression
     internal sealed class SemanticBinaryExpression : SemanticExpression
     {
         
-        public override SemanticNodeKind Kind => SemanticNodeKind.UnaryExpression;
+        public override SemanticNodeKind Kind => SemanticNodeKind.BinaryExpression;
         public override Type Type => Operator.Type;
         public SemanticExpression Left { get; }
         public SemanticBinaryOperator Operator { get; }

@@ -20,6 +20,7 @@ namespace Gatsby.Analysis.Semantic
                 TokenType.LiteralExpression => SemanticLiteralExpression((LiteralExpressionSyntax) syntax),
                 TokenType.UnaryExpression => SemanticUnaryExpression((UnaryExpressionSyntax) syntax),
                 TokenType.BinaryExpression => SemanticBinaryExpression((BinaryExpressionSyntax) syntax),
+                TokenType.ParenthesizedExpression => SemanticExpression(((ParenthesizedExpressionSyntax)syntax).Expression),
                 _ => throw new Exception($"Unexpected syntax {syntax.Kind}")
             };
         }

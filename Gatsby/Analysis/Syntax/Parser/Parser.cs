@@ -55,7 +55,7 @@ namespace Gatsby.Analysis.Syntax.Parser
 
         private SyntaxToken MatchToken(TokenType kind)
         {
-            //Move the position if we the correct epected token
+            //Move the position if we the correct expected token
             if (Current.Kind == kind)
                 return NextToken();
 
