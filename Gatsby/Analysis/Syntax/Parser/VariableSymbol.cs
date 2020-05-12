@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Gatsby.Analysis.Diagnostics
+namespace Gatsby.Analysis.Syntax.Parser
 {
     public sealed class VariableSymbol
     {

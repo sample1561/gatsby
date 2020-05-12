@@ -1,9 +1,8 @@
 ﻿using System;
-using Gatsby.Analysis.Diagnostics;
-using Gatsby.Analysis.Semantic.Expression;
 using Gatsby.Analysis.Semantic.Node;
+using Gatsby.Analysis.Syntax.Parser;
 
-namespace Gatsby.Analysis.Semantic
+namespace Gatsby.Analysis.Semantic.Expression
 {
     internal sealed class SemanticVariableExpression : SemanticExpression
     {

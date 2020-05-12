@@ -6,6 +6,7 @@ using Gatsby.Analysis.Semantic.Expression;
 using Gatsby.Analysis.Semantic.Operator;
 using Gatsby.Analysis.Syntax.Expression;
 using Gatsby.Analysis.Syntax.Lexer;
+using Gatsby.Analysis.Syntax.Parser;
 
 namespace Gatsby.Analysis.Semantic
 {

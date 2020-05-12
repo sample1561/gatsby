@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Gatsby.Analysis.Diagnostics;
-using Gatsby.Analysis.Semantic;
 using Gatsby.Analysis.Semantic.Expression;
 using Gatsby.Analysis.Semantic.Operator.Kind;
 
-namespace Gatsby.Analysis
+namespace Gatsby.Analysis.Syntax.Parser
 {
     internal sealed class Evaluator
     {

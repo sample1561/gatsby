@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gatsby.Analysis.Diagnostics;
 using Gatsby.Analysis.Semantic;
+using Gatsby.Analysis.Syntax.Parser;
 using Gatsby.Analysis.Syntax.Tree;
 
 namespace Gatsby.Analysis

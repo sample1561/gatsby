@@ -2,7 +2,7 @@
 using System.Linq;
 using Gatsby.Analysis.Diagnostics;
 
-namespace Gatsby.Analysis
+namespace Gatsby.Analysis.Syntax.Parser
 {
     public sealed class EvaluationResult
     {
