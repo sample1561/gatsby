@@ -50,7 +50,7 @@ namespace Gatsby.Analysis.Semantic.Operator
             new SemanticBinaryOperator(TokenType.LogicalOr, SemanticBinaryOperatorKind.Disjunction, typeof(bool)),
             
             //Comparision Operators - Arithmetic
-            new SemanticBinaryOperator(TokenType.EqualsTo, SemanticBinaryOperatorKind.EqualsTo,typeof(int),typeof(bool)), 
+            new SemanticBinaryOperator(TokenType.Equality, SemanticBinaryOperatorKind.EqualsTo,typeof(int),typeof(bool)), 
             new SemanticBinaryOperator(TokenType.NotEqualsTo, SemanticBinaryOperatorKind.NotEqualsTo,typeof(int),typeof(bool)),
             
             new SemanticBinaryOperator(TokenType.GreaterThan, SemanticBinaryOperatorKind.GreaterThan,typeof(int),typeof(bool)),
@@ -59,14 +59,14 @@ namespace Gatsby.Analysis.Semantic.Operator
             new SemanticBinaryOperator(TokenType.LessThanEquals, SemanticBinaryOperatorKind.LessThanEquals,typeof(int),typeof(bool)),
             
             //Comparision Operators - Boolean
-            new SemanticBinaryOperator(TokenType.EqualsTo, SemanticBinaryOperatorKind.EqualsTo,typeof(bool)), 
+            new SemanticBinaryOperator(TokenType.Equality, SemanticBinaryOperatorKind.EqualsTo,typeof(bool)), 
             new SemanticBinaryOperator(TokenType.NotEqualsTo, SemanticBinaryOperatorKind.NotEqualsTo,typeof(bool)),
             
             //Bitwise Operators -
             new SemanticBinaryOperator(TokenType.BitwiseAnd, SemanticBinaryOperatorKind.BitwiseAnd,typeof(int)), 
             new SemanticBinaryOperator(TokenType.BitwiseOr, SemanticBinaryOperatorKind.BitwiseOr,typeof(int)),
             new SemanticBinaryOperator(TokenType.BitwiseXor, SemanticBinaryOperatorKind.BitwiseXor,typeof(int)),
-            new SemanticBinaryOperator(TokenType.EqualsTo, SemanticBinaryOperatorKind.EqualsTo,typeof(int)),
+            new SemanticBinaryOperator(TokenType.Equality, SemanticBinaryOperatorKind.EqualsTo,typeof(int)),
             new SemanticBinaryOperator(TokenType.LeftShift, SemanticBinaryOperatorKind.LeftShift,typeof(int)),
             new SemanticBinaryOperator(TokenType.RightShift, SemanticBinaryOperatorKind.RightShift,typeof(int))
         };

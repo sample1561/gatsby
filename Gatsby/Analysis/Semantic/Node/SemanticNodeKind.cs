@@ -4,6 +4,8 @@ namespace Gatsby.Analysis.Semantic.Node
     {
         LiteralExpression,
         UnaryExpression,
-        BinaryExpression
+        BinaryExpression,
+        VariableExpression,
+        AssignmentExpression
     }
 }

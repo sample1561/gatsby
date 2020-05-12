@@ -32,7 +32,7 @@ namespace Gatsby.Analysis.Syntax.Parser
                 TokenType.Plus => 3,
                 TokenType.Minus => 3,
                 
-                TokenType.EqualsTo => 4,
+                TokenType.Equality => 4,
                 TokenType.NotEqualsTo => 4,
                 TokenType.GreaterThan => 4,
                 TokenType.GreaterThanEquals => 4,

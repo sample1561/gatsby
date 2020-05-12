@@ -12,7 +12,7 @@ namespace Gatsby.Analysis.Syntax.Parser
     {
         private readonly SyntaxToken[] _tokens;
 
-        private DiagnosticBag _diagnostics = new DiagnosticBag();
+        private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
         private int _position;
 
         public Parser(string text)
@@ -71,7 +71,25 @@ namespace Gatsby.Analysis.Syntax.Parser
             return new SyntaxTree(expresion, endOfFileToken, _diagnostics);
         }
 
-        private ExpressionSyntax ParseExpression(int parentPrecedence = 0)
+        private ExpressionSyntax ParseExpression()
+        {
+            return ParseAssignmentExpression();
+        }
+        
+        private ExpressionSyntax ParseAssignmentExpression()
+        {
+            if (Peek(0).Kind != TokenType.Identifier || Peek(1).Kind != TokenType.Assign)
+                return ParseBinaryExpression();
+            
+            var identifierToken = NextToken();
+            var operatorToken = NextToken();
+            var right = ParseAssignmentExpression();
+                
+            return new AssignmentExpressionSyntax(identifierToken,operatorToken,right);
+
+        }
+
+        private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0)
         {
             ExpressionSyntax left;
             var unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
@@ -79,7 +97,7 @@ namespace Gatsby.Analysis.Syntax.Parser
             if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence)
             {
                 var operatorToken = NextToken();
-                var operand = ParseExpression(unaryOperatorPrecedence);
+                var operand = ParseBinaryExpression(unaryOperatorPrecedence);
                 
                 //Create new Left branch for the current expression
                 left = new UnaryExpressionSyntax(operatorToken, operand);
@@ -110,7 +128,7 @@ namespace Gatsby.Analysis.Syntax.Parser
                     break;
 
                 var operatorToken = NextToken();
-                var right = ParseExpression(precedence);
+                var right = ParseBinaryExpression(precedence);
                 
                 //Substitute the left branch with a new subtree
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
@@ -142,7 +160,13 @@ namespace Gatsby.Analysis.Syntax.Parser
                     var value = keywordToken.Kind == TokenType.TrueKeyword;
                     return new LiteralExpressionSyntax(keywordToken, value);
                 }
-                    
+
+                case TokenType.Identifier:
+                {
+                    var identifierToken = NextToken(); 
+                    return new NameExpressionSyntax(identifierToken);
+                }
+
                 default:
                 {
                     //Create a virtual number token as that is the only possible node

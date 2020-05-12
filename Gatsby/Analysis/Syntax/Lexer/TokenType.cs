@@ -6,6 +6,7 @@ namespace Gatsby.Analysis.Syntax.Lexer
         Bad,
         EndOfFile,
         Whitespace,
+        Assign,
         Number,
         Plus,
         Minus,
@@ -20,7 +21,7 @@ namespace Gatsby.Analysis.Syntax.Lexer
         OpenParenthesis,
         CloseParenthesis,
         Identifier,
-        EqualsTo,
+        Equality,
         NotEqualsTo,
         LessThan,
         LessThanEquals,
@@ -38,6 +39,8 @@ namespace Gatsby.Analysis.Syntax.Lexer
         UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
+        NameExpression,
+        AssignmentExpression,
 
         //Keywords
         TrueKeyword,

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Gatsby.Analysis;
+using Gatsby.Analysis.Diagnostics;
 using Gatsby.Analysis.Semantic;
 using Gatsby.Analysis.Syntax;
 using Gatsby.Analysis.Syntax.Lexer;
@@ -15,6 +17,8 @@ namespace Gatsby
         {
             var showTree = false;
             var showToken = false;
+
+            var variables = new Dictionary<VariableSymbol,object>();
 
             while (true)
             {
@@ -46,7 +50,7 @@ namespace Gatsby
 
                 var syntaxTree = SyntaxTree.Parse(line);
                 var compilation = new Compilation(syntaxTree);
-                var result = compilation.Evaluate();
+                var result = compilation.Evaluate(variables);
                 
                 var diagnostics = result.Diagnostics;
 

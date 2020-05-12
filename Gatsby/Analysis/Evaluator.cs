@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using Gatsby.Analysis.Diagnostics;
+using Gatsby.Analysis.Semantic;
 using Gatsby.Analysis.Semantic.Expression;
 using Gatsby.Analysis.Semantic.Operator.Kind;
 
@@ -8,10 +11,12 @@ namespace Gatsby.Analysis
     internal sealed class Evaluator
     {
         private readonly SemanticExpression _root;
+        private readonly Dictionary<VariableSymbol, object> _variables;
 
-        public Evaluator(SemanticExpression root)
+        public Evaluator(SemanticExpression root, Dictionary<VariableSymbol,object> variables)
         {
             _root = root;
+            _variables = variables;
         }
 
         public object Evaluate()
@@ -26,6 +31,16 @@ namespace Gatsby.Analysis
             {
                 case SemanticLiteralExpression n:
                     return n.Value;
+
+                case SemanticVariableExpression v:
+                    return _variables[v.Variable];
+
+                case SemanticAssignmentExpression a:
+                {
+                    var value = EvaluateExpression(a.Expression);
+                    _variables[a.Variable] = value;
+                    return value;
+                }
                 
                 case SemanticUnaryExpression u:
                 {

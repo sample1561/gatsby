@@ -152,15 +152,16 @@ namespace Gatsby.Analysis.Syntax.Lexer
                 
                 case '=':
                 {
-                    if (Ahead == '=')
+                    switch (Ahead)
                     {
-                        _position += 2;
-                        return new SyntaxToken(TokenType.EqualsTo, start, "==", null);
+                        //We haven't implemented the assignment operator
+                        case '=':
+                            _position += 2;
+                            return new SyntaxToken(TokenType.Equality, start, "==", null);
+                        
+                        default:
+                            return new SyntaxToken(TokenType.Assign, _position++, "=", null);
                     }
-                    
-                    //We haven't implemented the assignment operator
-                    else
-                        break;
                 }
 
                 case '>':

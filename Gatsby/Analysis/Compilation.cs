@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Gatsby.Analysis.Diagnostics;
 using Gatsby.Analysis.Semantic;
@@ -15,9 +16,9 @@ namespace Gatsby.Analysis
             Syntax = syntax;
         }
 
-        public EvaluationResult Evaluate()
+        public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables)
         {
-            var binder = new SemanticBinder();
+            var binder = new SemanticBinder(variables);
             var boundExpression = binder.SemanticExpression(Syntax.Root);
 
             var diagnostics = Syntax.Diagnostics.Concat(binder.Diagnostics).ToArray();
@@ -25,7 +26,7 @@ namespace Gatsby.Analysis
             if (diagnostics.Any())
                 return new EvaluationResult(diagnostics,null);
 
-            var evaluator = new Evaluator(boundExpression);
+            var evaluator = new Evaluator(boundExpression, variables);
             var value = evaluator.Evaluate();
             
             return new EvaluationResult(Array.Empty<Diagnostic>(),value);
