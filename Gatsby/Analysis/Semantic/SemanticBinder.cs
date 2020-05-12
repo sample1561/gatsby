@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Gatsby.Analysis.Diagnostics;
 using Gatsby.Analysis.Semantic.Expression;
 using Gatsby.Analysis.Semantic.Operator;
 using Gatsby.Analysis.Syntax.Expression;
@@ -9,9 +10,9 @@ namespace Gatsby.Analysis.Semantic
 {
     internal sealed class SemanticBinder
     {
-        private readonly List<string> _diagnostics = new List<string>();
+        private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
 
-        public IEnumerable<string> Diagnostics => _diagnostics;
+        public DiagnosticBag Diagnostics => _diagnostics;
 
         public SemanticExpression SemanticExpression(ExpressionSyntax syntax)
         {
@@ -38,9 +39,8 @@ namespace Gatsby.Analysis.Semantic
 
             if (boundOperator != null) 
                 return new SemanticUnaryExpression(boundOperator, boundOperand);
-            
-            _diagnostics.Add($"Unrecognized Unary operator '{syntax.OperatorToken.Text}' " +
-                             $"is not defined for type {boundOperand.Type}.");
+
+            _diagnostics.ReportUndefinedUnaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text, boundOperand.Type);
             return boundOperand;
 
         }
@@ -53,10 +53,9 @@ namespace Gatsby.Analysis.Semantic
 
             if (boundOperator != null) 
                 return new SemanticBinaryExpression(boundLeft, boundOperator, boundRight);
-            
-            _diagnostics.Add($"Binary operator '{syntax.OperatorToken.Text}' " +
-                             $"is not defined for types {boundLeft.Type} and {boundRight.Type}.");
-            
+
+            _diagnostics.ReportUndefinedBinaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text, boundLeft.Type, boundRight.Type);
+
             return boundLeft;
         }
     }

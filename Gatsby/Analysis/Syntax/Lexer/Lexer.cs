@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Gatsby.Analysis.Diagnostics;
 using Gatsby.Analysis.Syntax.Parser;
 
 namespace Gatsby.Analysis.Syntax.Lexer
@@ -7,14 +8,14 @@ namespace Gatsby.Analysis.Syntax.Lexer
     {
         private readonly string _text;
         private int _position;
-        private readonly List<string> _diagnostics = new List<string>();
+        private DiagnosticBag _diagnostics = new DiagnosticBag();
 
         public Lexer(string text)
         {
             _text = text;
         }
 
-        public IEnumerable<string> Diagnostics => _diagnostics;
+        public DiagnosticBag Diagnostics => _diagnostics;
 
         private char Current => Peek(0);
 
@@ -37,11 +38,13 @@ namespace Gatsby.Analysis.Syntax.Lexer
             //End of File 
             if (_position >= _text.Length)
                 return new SyntaxToken(TokenType.EndOfFile, _position, "\0", null);
+            
+            var start = _position;
 
             //Integer
             if (char.IsDigit(Current))
             {
-                var start = _position;
+                
 
                 while (char.IsDigit(Current))
                     Next();
@@ -49,7 +52,7 @@ namespace Gatsby.Analysis.Syntax.Lexer
                 var length = _position - start;
                 var text = _text.Substring(start, length);
                 if (!int.TryParse(text, out var value))
-                    _diagnostics.Add($"The number {_text} isn't INT32");
+                    _diagnostics.ReportInvalidNumber(new TextSpan(start, length), _text, typeof(int));
 
                 return new SyntaxToken(TokenType.Number, start, text, value);
             }
@@ -57,8 +60,6 @@ namespace Gatsby.Analysis.Syntax.Lexer
             //Whitespace
             if (char.IsWhiteSpace(Current))
             {
-                var start = _position;
-
                 while (char.IsWhiteSpace(Current))
                     Next();
 
@@ -70,8 +71,6 @@ namespace Gatsby.Analysis.Syntax.Lexer
             //True-False and catch-all identifiers
             if (char.IsLetter(Current))
             {
-                var start = _position;
-
                 while (char.IsLetter(Current))
                     Next();
 
@@ -114,60 +113,88 @@ namespace Gatsby.Analysis.Syntax.Lexer
 
                 case '!':
                 {
-                    if (Ahead != '=')
-                        return new SyntaxToken(TokenType.Negation, _position, "!", null);
-
-                    if (Ahead == '=')
-                        return new SyntaxToken(TokenType.NotEqualsTo, _position += 2, "!=", null);
-
-                    break;
+                    switch (Ahead)
+                    {
+                        case '=':
+                            _position += 2;
+                            return new SyntaxToken(TokenType.Negation, start, "!=", null);
+                        
+                        default:
+                            return new SyntaxToken(TokenType.Negation, start, "!", null);
+                    }
                 }
 
                 case '&':
                 {
-                    return Ahead switch
+                    switch (Ahead)
                     {
-                        '&' => new SyntaxToken(TokenType.LogicalAnd, _position += 2, "&&", null),
-                        _ => new SyntaxToken(TokenType.BitwiseAnd, _position++, "&", null)
-                    };
+                        case '&':
+                            _position += 2;
+                            return new SyntaxToken(TokenType.LogicalAnd, start, "&&", null);
+                        
+                        default:
+                            return new SyntaxToken(TokenType.BitwiseAnd, _position++, "&", null);
+                    }
                 }
 
                 case '|':
                 {
-                    return Ahead switch
+                    switch (Ahead)
                     {
-                        '|' => new SyntaxToken(TokenType.LogicalOr, _position += 2, "||", null),
-                        _ => new SyntaxToken(TokenType.BitwiseOr, _position++, "&", null)
-                    };
+                        case '|':
+                            _position += 2;
+                            return new SyntaxToken(TokenType.LogicalOr, start, "||", null);
+                        
+                        default:
+                            return new SyntaxToken(TokenType.BitwiseOr, _position++, "&", null);
+                    }
                 }
                 
                 case '=':
                 {
                     if (Ahead == '=')
-                        return new SyntaxToken(TokenType.EqualsTo, _position += 2, "==",null);
-
+                    {
+                        _position += 2;
+                        return new SyntaxToken(TokenType.EqualsTo, start, "==", null);
+                    }
+                    
                     //We haven't implemented the assignment operator
-                    break;
+                    else
+                        break;
                 }
 
                 case '>':
                 {
-                    return Ahead switch
+                    switch (Ahead)
                     {
-                        '=' => new SyntaxToken(TokenType.GreaterThanEquals, _position += 2, ">=", null),
-                        '>' => new SyntaxToken(TokenType.RightShift, _position += 2, ">>", null),
-                        _ => new SyntaxToken(TokenType.GreaterThan, _position++, ">", null)
-                    };
+                        case '=':
+                            _position += 2;
+                            return new SyntaxToken(TokenType.GreaterThanEquals, start, ">=", null);
+                        
+                        case '>':
+                            _position += 2;
+                            return new SyntaxToken(TokenType.RightShift, start, ">>", null);
+                        
+                        default:
+                            return new SyntaxToken(TokenType.GreaterThan, _position++, ">", null);
+                    }
                 }
                 
                 case '<':
                 {
-                    return Ahead switch
+                    switch (Ahead)
                     {
-                        '=' => new SyntaxToken(TokenType.LessThanEquals, _position += 2, "<=", null),
-                        '<' => new SyntaxToken(TokenType.LeftShift, _position += 2, "<<", null),
-                        _ => new SyntaxToken(TokenType.LessThan, _position++, "<", null)
-                    };
+                        case '=':
+                            _position += 2;
+                            return new SyntaxToken(TokenType.LessThanEquals, start, "<=", null);
+                        
+                        case '<':
+                            _position += 2;
+                            return new SyntaxToken(TokenType.LeftShift, start, "<<", null);
+                        
+                        default:
+                            return new SyntaxToken(TokenType.LessThan, _position++, "<", null);
+                    }
                 }
                 
                 case '~':
@@ -180,7 +207,7 @@ namespace Gatsby.Analysis.Syntax.Lexer
                     return new SyntaxToken(TokenType.CloseParenthesis, _position++, ")", null);
             }
 
-            _diagnostics.Add($"ERROR: Unrecognized Input: '{Current}'");
+            _diagnostics.ReportBadCharacter(_position, Current);
             return new SyntaxToken(TokenType.Bad, _position++, _text.Substring(_position - 1, 1), null);
         }
     }

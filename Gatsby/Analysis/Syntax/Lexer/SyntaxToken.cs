@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Gatsby.Analysis.Diagnostics;
 using Gatsby.Analysis.Syntax.Tree;
 
 namespace Gatsby.Analysis.Syntax.Lexer
@@ -18,6 +19,7 @@ namespace Gatsby.Analysis.Syntax.Lexer
         public int Position { get; }
         public string Text { get; }
         public object Value { get; }
+        public TextSpan Span => new TextSpan(Position, Text.Length);
 
         public override IEnumerable<SyntaxNode> GetChildren()
         {
