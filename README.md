@@ -3,15 +3,16 @@ Compiler in C# for Compiler Design Project
 
 # Features Completed
 - Parser, Lexer, Parse Tree
-- Generalized Parsing using Precedences
+- Parsing using Operator Precedence Parsing
 - Support Binary and Unary Operators
-- Boolean and INT32 Datatypes
+- Bool and INT32 Datatypes (C# Definition)
 
 # Command Line Operation
 - Arithmetic : Addition, Substraction, Division, Multiplication, Power, Modulas, Negation
 - Boolean : AND, OR, Negation, Equality, Inequality
 - Comparitive : Equals, Not-equals, Less Than, Less Than Equals, Greater Than, Greater Than Equals
 - Bitwise : Left Shift, Right Shift, AND, OR, XOR 
+- Variable Declaration & Assignement
 
 # Operator precedence
 - Created Syntax rules such that each operator has a numberic value denoting its precedence
